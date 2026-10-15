@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b10">
+<title>Wilayah Lingkup ETR</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--bg:#070b10;--panel:#0d141c;--panel2:#101b25;--line:#1c3440;--green:#3dffad;--blue:#36cfff;--text:#e7f2f5;--muted:#88a1ad;--red:#ff657a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body{min-height:100vh;background:radial-gradient(ellipse at 70% -10%,#0d2630 0,transparent 45%),var(--bg)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1600px;margin:auto;padding:14px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid var(--line);background:#0b1219eF;padding:14px 16px;border-radius:16px;box-shadow:0 0 25px #00dca20a}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(145deg,#153b39,#102b46);border:1px solid #2f997c;display:grid;place-items:center;color:var(--green);font-weight:900;letter-spacing:-2px;box-shadow:0 0 20px #3dffad20}.brand h1{font-size:17px;margin:0;letter-spacing:.08em;text-transform:uppercase}.brand p{margin:4px 0 0;color:var(--muted);font-size:11px;letter-spacing:.16em;text-transform:uppercase}.status{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);display:inline-block}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #28505a;color:var(--text);background:#10202a;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:650}.btn.primary{background:var(--green);border-color:var(--green);color:#04120d}.btn:hover{filter:brightness(1.15)}.btn.danger{border-color:#63303b;color:#ff9aa7;background:#24131a}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.stat{padding:14px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(135deg,#0e171f,#0a1016);min-width:0}.stat .label{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted)}.stat .value{font-size:25px;font-weight:750;margin-top:7px}.stat .hint{font-size:10px;color:#6e8a96;margin-top:4px}.green{color:var(--green)}.blue{color:var(--blue)}
+.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.85fr);gap:12px}.panel{border:1px solid var(--line);background:linear-gradient(145deg,#0d151d,#0a1117);border-radius:15px;overflow:hidden;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}.panel-head h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:0}.panel-head p{margin:4px 0 0;color:var(--muted);font-size:11px}.eyebrow{color:var(--green);font-size:9px;letter-spacing:.16em;text-transform:uppercase}.map-wrap{position:relative;height:min(67vh,680px);min-height:360px;background:#081018}.map{height:100%;width:100%;background:#081018}.map .leaflet-container{background:#081018}.map-controls{position:absolute;z-index:500;top:12px;left:12px;right:12px;display:flex;gap:8px;pointer-events:none;flex-wrap:wrap}.map-chip{pointer-events:auto;background:#071019eF;border:1px solid #24414d;border-radius:8px;padding:8px 10px;color:#c8e3e9;font-size:11px;box-shadow:0 5px 20px #0005}.map-chip strong{color:var(--green)}.map-legend{position:absolute;z-index:500;bottom:12px;left:12px;background:#071019ed;border:1px solid #24414d;border-radius:9px;padding:10px 12px;font-size:10px;color:var(--muted);display:grid;gap:7px}.legend-row{display:flex;align-items:center;gap:7px}.legend-dot{height:8px;width:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px currentColor}.side{display:grid;gap:12px;align-content:start}.toolbar{display:flex;gap:7px;padding:12px;flex-wrap:wrap}.search{min-width:0;flex:1;background:#080e14;border:1px solid #203642;color:var(--text);border-radius:8px;padding:9px 10px;font-size:12px}.filter{background:#080e14;border:1px solid #203642;color:var(--text);border-radius:8px;padding:8px;font-size:11px;max-width:100%}.locations{max-height:365px;overflow:auto;padding:0 10px 10px}.loc{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px 8px;border-bottom:1px solid #172933;cursor:pointer;border-radius:8px}.loc:hover{background:#11212a}.loc .pin{width:7px;height:7px;border-radius:50%;background:var(--green);margin-top:5px;box-shadow:0 0 9px var(--green)}.loc h3{margin:0;font-size:12px;font-weight:700}.loc p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5;overflow-wrap:anywhere}.loc .category{color:var(--blue);font-size:9px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.loc .loc-actions{display:flex;gap:4px}.mini{font-size:10px;padding:5px 7px;border-radius:6px;border:1px solid #29414a;background:#0a151c;color:#b6cbd2}.empty{padding:24px 16px;color:var(--muted);font-size:12px;text-align:center;line-height:1.6}.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 4px;color:#66808c;font-size:10px}.modal-backdrop{position:fixed;inset:0;z-index:2000;background:#02070bd9;display:none;align-items:center;justify-content:center;padding:12px}.modal-backdrop.open{display:flex}.modal{width:min(620px,100%);max-height:92vh;overflow:auto;border:1px solid #28505a;background:#0b141c;border-radius:15px;box-shadow:0 25px 100px #000b}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid var(--line)}.modal-head h2{font-size:14px;margin:0}.form{padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}.field input,.field select,.field textarea{width:100%;min-width:0;background:#070e14;border:1px solid #25404b;color:var(--text);border-radius:8px;padding:10px;font-size:12px}.field textarea{min-height:82px;resize:vertical}.preview{max-width:100%;max-height:180px;border-radius:8px;display:none;border:1px solid var(--line)}.modal-actions{display:flex;justify-content:space-between;gap:8px;padding:0 15px 15px;flex-wrap:wrap}.notice{padding:10px 12px;background:#0d211d;border:1px solid #1e5745;border-radius:9px;color:#a9f4d5;font-size:11px;line-height:1.5;margin:12px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0b151d;color:var(--text);border:1px solid #28505a}.leaflet-popup-content{margin:12px;font-size:12px}.popup-title{font-weight:800;color:var(--green);margin-bottom:5px}.popup-img{max-width:220px;max-height:120px;display:block;border-radius:7px;margin-top:8px}.leaflet-control-zoom a{background:#0b151d!important;color:var(--green)!important;border-color:#28505a!important}.leaflet-control-attribution{background:#071019cc!important;color:#78919b!important}.leaflet-control-attribution a{color:var(--blue)!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.map-wrap{height:55vh;min-height:340px}.locations{max-height:330px}.side{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.brand h1{font-size:14px}}
+@media(max-width:420px){.app{padding:8px}.topbar{padding:11px}.status{display:none}.stats{gap:7px}.stat{padding:11px}.stat .value{font-size:21px}.map-wrap{min-height:330px}.form{grid-template-columns:1fr}.field.full{grid-column:auto}.map-chip{font-size:10px;padding:7px}.actions .btn{padding:8px 9px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">ETR</div><div><h1>Wilayah Lingkup ETR</h1><p>Geospatial intelligence workspace</p></div></div>
+    <div class="status"><span class="dot"></span><span>MAP SYSTEM ONLINE</span><span id="clock">--:--:-- WIB</span></div>
+    <div class="actions">
+      <button class="btn" id="exportBtn">Export JSON</button>
+      <button class="btn" id="importBtn">Import JSON</button>
+      <button class="btn primary" id="addBtn">＋ Tambah Lokasi</button>
+    </div>
+  </header>
+  <section class="stats">
+    <div class="stat"><div class="label">Total Lokasi</div><div class="value green" id="totalStat">0</div><div class="hint">Marker tersimpan di perangkat</div></div>
+    <div class="stat"><div class="label">Kategori</div><div class="value blue" id="categoryStat">0</div><div class="hint">Jenis wilayah / titik</div></div>
+    <div class="stat"><div class="label">Dengan Foto</div><div class="value" id="photoStat">0</div><div class="hint">Dokumentasi lokasi</div></div>
+    <div class="stat"><div class="label">Status</div><div class="value green" style="font-size:18px">AKTIF</div><div class="hint">Peta & editor lokal siap</div></div>
+  </section>
+  <main class="layout">
+    <section class="panel">
+      <div class="panel-head"><div><div class="eyebrow">01 / Geospatial</div><h2 style="margin-top:5px">Peta Lingkup ETR</h2><p>Pilih marker untuk melihat detail. Klik peta untuk menambahkan titik.</p></div><span class="map-chip">● <strong id="mapCount">0</strong> titik</span></div>
+      <div class="map-wrap">
+        <div id="map" class="map"></div>
+        <div class="map-controls"><div class="map-chip">MODE <strong id="mapMode">VIEW</strong></div><button class="map-chip" id="mapAddBtn">＋ Tambah titik dari peta</button><button class="map-chip" id="resetViewBtn">Reset tampilan</button></div>
+        <div class="map-legend"><div class="legend-row"><span class="legend-dot"></span> Titik ETR</div><div class="legend-row"><span class="legend-dot" style="background:var(--blue);color:var(--blue)"></span> Titik terpilih</div><div>Data peta: OpenStreetMap</div></div>
+      </div>
+    </section>
+    <aside class="side">
+      <section class="panel">
+        <div class="panel-head"><div><div class="eyebrow">02 / Registry</div><h2 style="margin-top:5px">Daftar Lokasi</h2><p>Tambah, cari, edit, dan hapus titik wilayah.</p></div></div>
+        <div class="toolbar"><input id="searchInput" class="search" placeholder="Cari nama, wilayah, catatan…"><select id="categoryFilter" class="filter"><option value="">Semua kategori</option></select></div>
+        <div id="locationList" class="locations"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><div class="eyebrow">03 / System notes</div><h2 style="margin-top:5px">Informasi Sistem</h2></div></div>
+        <div style="padding:14px;font-size:11px;line-height:1.7;color:var(--muted)">
+          <p style="margin-top:0">Dashboard ini adalah fondasi ETR yang bisa diedit. Marker dan foto disimpan di penyimpanan browser perangkat ini.</p>
+          <p>Untuk memindahkan data ke HP/browser lain, gunakan <b style="color:var(--text)">Export JSON</b> lalu <b style="color:var(--text)">Import JSON</b> di perangkat tujuan.</p>
+          <p>Informasi pesawat, kapal, satelit, dan berita langsung belum terhubung secara default. Data tersebut perlu integrasi API terpisah.</p>
+          <div style="border-top:1px solid var(--line);padding-top:10px;color:#6e8994">BUILD <span class="green">ETR-WEB-001</span> · LOCAL DATA MODE</div>
+        </div>
+      </section>
+    </aside>
+  </main>
+  <footer class="footer"><span>WILAYAH LINGKUP ETR · DARK INTELLIGENCE UI</span><span>Gunakan data lokasi yang memang boleh Anda publikasikan.</span></footer>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle">Tambah Lokasi</h2><button class="btn" id="closeModalBtn">✕ Tutup</button></div>
+    <div class="notice">Isi koordinat latitude dan longitude, atau tekan tombol “Tambah titik dari peta” lalu pilih posisi pada peta. Foto disimpan di browser dan ikut ke ekspor JSON.</div>
+    <form id="locationForm">
+      <div class="form">
+        <div class="field full"><label for="locName">Nama lokasi *</label><input id="locName" required maxlength="100" placeholder="Contoh: Pos ETR Utara"></div>
+        <div class="field"><label for="locCategory">Kategori</label><select id="locCategory"><option>Wilayah</option><option>Pos / Titik Pantau</option><option>Infrastruktur</option><option>Peristiwa</option><option>Lainnya</option></select></div>
+        <div class="field"><label for="locStatus">Status</label><select id="locStatus"><option>Aktif</option><option>Pemantauan</option><option>Nonaktif</option></select></div>
+        <div class="field"><label for="locLat">Latitude *</label><input id="locLat" type="number" required min="-90" max="90" step="any" placeholder="-6.2000"></div>
+        <div class="field"><label for="locLng">Longitude *</label><input id="locLng" type="number" required min="-180" max="180" step="any" placeholder="106.8167"></div>
+        <div class="field full"><label for="locArea">Nama wilayah / alamat</label><input id="locArea" maxlength="180" placeholder="Kota, provinsi, atau deskripsi area"></div>
+        <div class="field full"><label for="locNotes">Catatan</label><textarea id="locNotes" maxlength="1500" placeholder="Deskripsi lokasi, informasi umum, dan catatan..."></textarea></div>
+        <div class="field full"><label for="locPhoto">Foto lokasi (opsional)</label><input id="locPhoto" type="file" accept="image/*" capture="environment"><img id="photoPreview" class="preview" alt="Pratinjau foto"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn danger" id="deleteBtn" style="display:none">Hapus lokasi</button><div style="display:flex;gap:8px;margin-left:auto"><button type="button" class="btn" id="cancelBtn">Batal</button><button type="submit" class="btn primary">Simpan lokasi</button></div></div>
+    </form>
+  </section>
+</div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(() => {
+const STORAGE_KEY='etr_locations_v1';
+const $=id=>document.getElementById(id);
+let locations=[], editingId=null, pendingPhoto=null, pickMode=false, pickedPoint=null, markerLayers={};
+const defaultLocations=[
+ {id:'demo-1',name:'Contoh Lokasi ETR',category:'Wilayah',status:'Aktif',lat:-6.2,lng:106.8167,area:'Jakarta, Indonesia',notes:'Marker contoh. Edit atau hapus lokasi ini, lalu tambahkan data wilayah Anda sendiri.',photo:''},
+ {id:'demo-2',name:'Titik Pantau Contoh',category:'Pos / Titik Pantau',status:'Pemantauan',lat:-6.59,lng:106.8,area:'Bogor, Jawa Barat',notes:'Titik contoh kedua untuk menunjukkan cara kerja daftar dan marker.',photo:''}
+];
+const map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([-2,118],4);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+function safe(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function load(){try{const raw=localStorage.getItem(STORAGE_KEY);locations=raw?JSON.parse(raw):defaultLocations; if(!Array.isArray(locations))locations=defaultLocations;}catch(e){locations=defaultLocations;}save();}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(locations));}catch(e){alert('Penyimpanan penuh. Coba foto yang lebih kecil, lalu ekspor data sebagai cadangan.');}}
+function icon(selected=false){return L.divIcon({className:'',html:`<div style="width:${selected?15:11}px;height:${selected?15:11}px;border-radius:50%;background:${selected?'#36cfff':'#3dffad'};border:2px solid #071018;box-shadow:0 0 8px ${selected?'#36cfff':'#3dffad'},0 0 18px ${selected?'#36cfff88':'#3dffad88'}"></div>`,iconSize:[16,16],iconAnchor:[8,8]});}
+function popup(loc){return `<div class="popup-title">${safe(loc.name)}</div><div style="color:#8da7b0">${safe(loc.category)} · ${safe(loc.status)}</div>${loc.area?`<div style="margin-top:5px">${safe(loc.area)}</div>`:''}<div style="font-size:10px;color:#8da7b0;margin-top:5px">${Number(loc.lat).toFixed(5)}, ${Number(loc.lng).toFixed(5)}</div>${loc.notes?`<p style="max-width:220px;line-height:1.5">${safe(loc.notes)}</p>`:''}${loc.photo?`<img class="popup-img" src="${loc.photo}" alt="Foto ${safe(loc.name)}">`:''}<button onclick="window.etrEdit('${loc.id}')" style="margin-top:9px;background:#3dffad;color:#04120d;border:0;border-radius:6px;padding:7px 10px;font-weight:700">Edit lokasi</button>`;}
+function drawMarkers(){Object.values(markerLayers).forEach(m=>map.removeLayer(m));markerLayers={};locations.forEach(loc=>{const m=L.marker([Number(loc.lat),Number(loc.lng)],{icon:icon()}).addTo(map);m.bindPopup(popup(loc));m.on('click',()=>highlight(loc.id));markerLayers[loc.id]=m;});$('mapCount').textContent=locations.length;}
+function highlight(id){document.querySelectorAll('.loc').forEach(el=>el.style.borderLeft=el.dataset.id===id?'2px solid var(--blue)':'2px solid transparent');const loc=locations.find(x=>x.id===id);if(loc&&markerLayers[id]){map.flyTo([loc.lat,loc.lng],Math.max(map.getZoom(),7),{duration:.5});markerLayers[id].openPopup();}}
+function render(){const q=$('searchInput').value.trim().toLowerCase(),cat=$('categoryFilter').value;const filtered=locations.filter(l=>(!cat||l.category===cat)&&(!q||[l.name,l.category,l.status,l.area,l.notes].join(' ').toLowerCase().includes(q)));$('locationList').innerHTML=filtered.length?filtered.map(l=>`<article class="loc" data-id="${safe(l.id)}" style="border-left:2px solid transparent"><span class="pin" style="${l.status==='Nonaktif'?'background:#71808a;box-shadow:none':l.status==='Pemantauan'?'background:var(--blue);box-shadow:0 0 8px var(--blue)':''}"></span><div><div class="category">${safe(l.category)} · ${safe(l.status)}</div><h3>${safe(l.name)}</h3><p>${safe(l.area||'Wilayah belum diisi')}<br>${Number(l.lat).toFixed(4)}, ${Number(l.lng).toFixed(4)}${l.photo?' · 📷 Foto':''}</p></div><div class="loc-actions"><button class="mini" data-action="view" data-id="${safe(l.id)}">Peta</button><button class="mini" data-action="edit" data-id="${safe(l.id)}">Edit</button></div></article>`).join(''):'<div class="empty">Tidak ada lokasi yang cocok.<br>Tekan “Tambah Lokasi” untuk membuat titik baru.</div>';
+$('totalStat').textContent=locations.length;$('categoryStat').textContent=new Set(locations.map(l=>l.category)).size;$('photoStat').textContent=locations.filter(l=>l.photo).length;
+const cats=[...new Set(locations.map(l=>l.category))];const current=$('categoryFilter').value;$('categoryFilter').innerHTML='<option value="">Semua kategori</option>'+cats.map(c=>`<option value="${safe(c)}">${safe(c)}</option>`).join('');if(cats.includes(current))$('categoryFilter').value=current;
+drawMarkers();}
+function openModal(loc=null,coords=null){editingId=loc?loc.id:null;pendingPhoto=loc?.photo||null;$('modalTitle').textContent=loc?'Edit Lokasi':'Tambah Lokasi';$('deleteBtn').style.display=loc?'inline-block':'none';$('locName').value=loc?.name||'';$('locCategory').value=loc?.category||'Wilayah';$('locStatus').value=loc?.status||'Aktif';$('locLat').value=loc?.lat??coords?.lat??'';$('locLng').value=loc?.lng??coords?.lng??'';$('locArea').value=loc?.area||'';$('locNotes').value=loc?.notes||'';$('locPhoto').value='';$('photoPreview').src=pendingPhoto||'';$('photoPreview').style.display=pendingPhoto?'block':'none';$('modalBackdrop').classList.add('open');$('mapMode').textContent='EDIT';setTimeout(()=>$('locName').focus(),100);}
+function closeModal(){$('modalBackdrop').classList.remove('open');editingId=null;pendingPhoto=null;$('mapMode').textContent=pickMode?'PICK POINT':'VIEW';}
+window.etrEdit=id=>{const loc=locations.find(x=>x.id===id);if(loc)openModal(loc);};
+$('addBtn').onclick=()=>openModal();$('mapAddBtn').onclick=()=>{pickMode=true;$('mapMode').textContent='PICK POINT';$('mapAddBtn').textContent='Pilih posisi di peta…';alert('Sekarang ketuk peta untuk memilih koordinat lokasi.');};
+map.on('click',e=>{if(pickMode){pickMode=false;$('mapAddBtn').textContent='＋ Tambah titik dari peta';openModal(null,{lat:+e.latlng.lat.toFixed(6),lng:+e.latlng.lng.toFixed(6)});}});
+$('resetViewBtn').onclick=()=>map.setView([-2,118],4);
+$('closeModalBtn').onclick=closeModal;$('cancelBtn').onclick=closeModal;
+$('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+$('locPhoto').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith('image/')){alert('Pilih file gambar.');return;}if(f.size>2*1024*1024){alert('Ukuran foto maksimal 2 MB agar penyimpanan browser tidak cepat penuh.');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{pendingPhoto=reader.result;$('photoPreview').src=pendingPhoto;$('photoPreview').style.display='block';};reader.readAsDataURL(f);});
+$('locationForm').addEventListener('submit',e=>{e.preventDefault();const lat=Number($('locLat').value),lng=Number($('locLng').value);if(!Number.isFinite(lat)||lat < -90||lat>90||!Number.isFinite(lng)||lng < -180||lng>180){alert('Koordinat tidak valid. Latitude -90 hingga 90, longitude -180 hingga 180.');return;}const item={id:editingId||'etr-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),name:$('locName').value.trim(),category:$('locCategory').value,status:$('locStatus').value,lat,lng,area:$('locArea').value.trim(),notes:$('locNotes').value.trim(),photo:pendingPhoto||''};if(!item.name){alert('Nama lokasi wajib diisi.');return;}if(editingId){locations=locations.map(l=>l.id===editingId?item:l);}else locations.push(item);save();closeModal();render();map.flyTo([lat,lng],Math.max(map.getZoom(),7));if(markerLayers[item.id])markerLayers[item.id].openPopup();});
+$('deleteBtn').onclick=()=>{if(!editingId)return;const loc=locations.find(l=>l.id===editingId);if(confirm(`Hapus lokasi “${loc?.name||''}”?`)){locations=locations.filter(l=>l.id!==editingId);save();closeModal();render();}};
+$('searchInput').addEventListener('input',render);$('categoryFilter').addEventListener('change',render);
+$('locationList').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b){const loc=locations.find(l=>l.id===b.dataset.id);if(!loc)return;if(b.dataset.action==='edit')openModal(loc);else highlight(loc.id);return;}const article=e.target.closest('.loc');if(article)highlight(article.dataset.id);});
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({app:'Wilayah Lingkup ETR',version:1,exportedAt:new Date().toISOString(),locations},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wilayah-lingkup-etr-data.json';a.click();URL.revokeObjectURL(url);};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);const arr=Array.isArray(parsed)?parsed:parsed.locations;if(!Array.isArray(arr))throw Error('Format JSON tidak berisi daftar lokasi.');if(!confirm(`Impor ${arr.length} lokasi? Data lokasi saat ini akan diganti.`))return;locations=arr.map((l,i)=>({id:String(l.id||'import-'+Date.now()+'-'+i),name:String(l.name||'Lokasi tanpa nama'),category:String(l.category||'Lainnya'),status:String(l.status||'Aktif'),lat:Number(l.lat),lng:Number(l.lng),area:String(l.area||''),notes:String(l.notes||''),photo:String(l.photo||'')})).filter(l=>Number.isFinite(l.lat)&&l.lat>=-90&&l.lat<=90&&Number.isFinite(l.lng)&&l.lng>=-180&&l.lng<=180);save();render();alert('Impor selesai.');}catch(err){alert('Gagal membaca JSON: '+err.message);}finally{$('importFile').value='';}};reader.readAsText(f);});
+function tick(){$('clock').textContent=new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date())+' WIB';}
+load();render();tick();setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>
